@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factory Traffic Control Center | Autonomous Floor Orchestrator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-branding">
+        <div class="logo-orb">
+          <div class="orb-pulse"></div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div>
+          <h1 class="system-title">NEXUS TRAFFIC // FACTORY OS</h1>
+          <p class="system-subtitle">AUTONOMOUS JUNCTION INTELLIGENCE & SAFETY SUPERVISOR</p>
+        </div>
+      </div>
+
+      <div class="header-status-ribbon">
+        <div class="status-pill" id="pill-mode">
+          <span class="status-dot"></span>
+          <span class="label">MODE:</span>
+          <span class="value" id="val-mode">CONNECTING...</span>
+        </div>
+        <div class="status-pill" id="pill-phase">
+          <span class="label">PHASE:</span>
+          <span class="value" id="val-phase">--</span>
+        </div>
+        <div class="status-pill" id="pill-hardware">
+          <span class="status-dot hardware-dot"></span>
+          <span class="label">CONTROLLER:</span>
+          <span class="value" id="val-hardware">SYNCED</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Section 14.2 & 14.6: Active Alerts & Failure Banner -->
+    <div id="alerts-banner" class="alerts-banner alerts-nominal">
+      <div class="alerts-content">
+        <span class="alerts-icon" id="alerts-icon">●</span>
+        <span id="alerts-text" class="alerts-text">ALL SYSTEMS NOMINAL // CONTROLLER SYNCED // ZERO SAFETY VIOLATIONS</span>
+      </div>
+      <span id="alerts-sub" class="alerts-sub mono"></span>
+    </div>
+
+    <!-- Main Grid -->
+    <main class="dashboard-grid">
+      <!-- Left Panel: Interactive Junction Canvas & Approach Queues -->
+      <section class="card junction-viewport-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🚦</span>
+            <span>JUNCTION INTERSECTION // JUNCTION A</span>
+          </div>
+          <div class="time-elapsed-badge">
+            <span>IN PHASE:</span>
+            <span id="phase-timer" class="mono">0.0s</span>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+          <div class="intersection-grid">
+            <!-- Road Approaches -->
+            <!-- North Approach -->
+            <div class="approach-lane approach-north">
+              <div class="lane-label">NORTH APPROACH</div>
+              <div class="light-head" id="signal-north">
+                <span class="lamp lamp-red"></span>
+                <span class="lamp lamp-yellow"></span>
+                <span class="lamp lamp-green"></span>
+              </div>
+              <div class="queue-track" id="queue-north">
+                <!-- Vehicle pills injected via JS -->
+              </div>
+            </div>
+
+            <!-- South Approach -->
+            <div class="approach-lane approach-south">
+              <div class="lane-label">SOUTH APPROACH</div>
+              <div class="light-head" id="signal-south">
+                <span class="lamp lamp-red"></span>
+                <span class="lamp lamp-yellow"></span>
+                <span class="lamp lamp-green"></span>
+              </div>
+              <div class="queue-track" id="queue-south"></div>
+            </div>
+
+            <!-- West Approach -->
+            <div class="approach-lane approach-west">
+              <div class="lane-label">WEST APPROACH</div>
+              <div class="light-head" id="signal-west">
+                <span class="lamp lamp-red"></span>
+                <span class="lamp lamp-yellow"></span>
+                <span class="lamp lamp-green"></span>
+              </div>
+              <div class="queue-track" id="queue-west"></div>
+            </div>
+
+            <!-- East Approach -->
+            <div class="approach-lane approach-east">
+              <div class="lane-label">EAST APPROACH</div>
+              <div class="light-head" id="signal-east">
+                <span class="lamp lamp-red"></span>
+                <span class="lamp lamp-yellow"></span>
+                <span class="lamp lamp-green"></span>
+              </div>
+              <div class="queue-track" id="queue-east"></div>
+            </div>
+
+            <!-- Core Crossroads -->
+            <div class="intersection-core">
+              <div class="crossroad-stripes"></div>
+              <div class="core-radar" id="core-radar">
+                <div class="radar-sweep"></div>
+                <div class="active-flow-indicator" id="flow-indicator">NS FLOW ACTIVE</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="junction-diagnostics-bar">
+          <div class="diag-item">
+            <span class="lbl">DESIRED / ACTUAL:</span>
+            <span class="val mono" id="diag-signals-state" style="font-size: 0.8rem; color: var(--accent-cyan);">CONFIRMED</span>
+          </div>
+          <div class="diag-item">
+            <span class="lbl">EMERGENCY PREEMPT:</span>
+            <span class="val" id="diag-emergency">NONE</span>
+          </div>
+          <div class="diag-item">
+            <span class="lbl">TRANSITION STEP:</span>
+            <span class="val mono" id="diag-transition">IDLE</span>
+          </div>
+          <div class="diag-item">
+            <span class="lbl">PENDING COMMAND:</span>
+            <span class="val mono" id="diag-pending-cmd">NONE</span>
+          </div>
+          <div class="diag-item">
+            <span class="lbl">TOTAL IN QUEUE:</span>
+            <span class="val mono" id="diag-queue-total">0 VEHICLES</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Dispatch & Override Operations -->
+      <section class="control-panel-stack">
+        <!-- Vehicle Dispatcher -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📦</span>
+              <span>SENSOR / RFID VEHICLE DISPATCH (SEC 10.2)</span>
+            </div>
+          </div>
+          <div class="dispatch-form">
+            <div class="input-row">
+              <div class="form-group">
+                <label>VEHICLE ID</label>
+                <input type="text" id="dispatch-id" placeholder="e.g. VH-501" value="VH-501">
+              </div>
+              <div class="form-group">
+                <label>TYPE</label>
+                <select id="dispatch-type">
+                  <option value="TRUCK" selected>Truck (Priority 5)</option>
+                  <option value="FORKLIFT">Forklift (Priority 3)</option>
+                  <option value="EMPLOYEE_VEHICLE">Employee Vehicle (Priority 1)</option>
+                  <option value="EMERGENCY">Emergency (Priority 100)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>APPROACH DIRECTION</label>
+                <select id="dispatch-dir">
+                  <option value="NORTH" selected>NORTH</option>
+                  <option value="SOUTH">SOUTH</option>
+                  <option value="EAST">EAST</option>
+                  <option value="WEST">WEST</option>
+                </select>
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn btn-primary" id="btn-dispatch">
+                <span>➕ Trigger Arrival Sensor</span>
+              </button>
+              <button class="btn btn-emergency" id="btn-quick-emergency">
+                <span>🚨 Emergency Preemption</span>
+              </button>
+              <button class="btn btn-secondary" id="btn-clear-first">
+                <span>🏁 Clear Oldest Crossing</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manual Override Panel -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🕹️</span>
+              <span>FLOOR SUPERVISOR OVERRIDE</span>
+            </div>
+            <span class="badge" id="badge-manual-status">AUTO SCHEDULING</span>
+          </div>
+          <div class="manual-controls">
+            <div class="form-row">
+              <div class="form-group">
+                <label>TARGET PHASE</label>
+                <select id="manual-phase-select">
+                  <option value="PHASE_NORTH_SOUTH">North-South Corridor</option>
+                  <option value="PHASE_EAST_WEST">East-West Corridor</option>
+                  <option value="PHASE_ALL_RED">All-Red Safety Freeze</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>HOLD DURATION: <span id="lbl-duration" class="mono">20s</span></label>
+                <input type="range" id="manual-duration-range" min="5" max="60" value="20" step="5">
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn btn-accent" id="btn-apply-manual">Force Phase Hold</button>
+              <button class="btn btn-outline" id="btn-release-manual">Revert to Auto</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fault Injection & Hardware Simulator -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">⚡</span>
+              <span>HARDWARE SIMULATION & FAULT INJECTION</span>
+            </div>
+          </div>
+          <div class="fault-controls">
+            <p class="description-hint">Simulate real industrial PLC faults to inspect fail-safe degraded behavior (Yellow flash).</p>
+            <div class="button-grid">
+              <button class="btn btn-warning" id="btn-fault-nack">Inject NACK Reject</button>
+              <button class="btn btn-warning" id="btn-fault-timeout">Simulate Timeout Drop</button>
+              <button class="btn btn-success" id="btn-fault-restore">Restore Healthy State</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Realtime Audit Event Journal -->
+        <div class="card journal-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📜</span>
+              <span>LIVE AUDIT JOURNAL // IMMUTABLE LEDGER</span>
+            </div>
+            <span class="pulse-indicator"></span>
+          </div>
+          <div class="journal-feed" id="journal-feed">
+            <div class="log-entry">
+              <span class="log-time">00:00:00</span>
+              <span class="log-tag tag-sys">INIT</span>
+              <span class="log-text">Auditor connected. Listening for telemetry...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
